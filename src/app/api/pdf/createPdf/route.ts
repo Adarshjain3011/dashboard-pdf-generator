@@ -14,7 +14,7 @@ dbConnection();
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();
-        const pdfName = formData.get('name');
+        const name = formData.get('name');
         const title = formData.get('title') as string;
         const content = formData.get('content') as string;
         const imageFile = formData.get('imageUrl') as File;
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
         let pdfResult;
         try {
-            pdfResult = await generatePdf(title, content, uploadResult.secure_url);
+            pdfResult = await generatePdf(name,title, content, uploadResult.secure_url);
         } catch (e: any) {
             return NextResponse.json({
                 message: "Error generating PDF.",

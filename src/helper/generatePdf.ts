@@ -6,7 +6,7 @@ import cloudinary from "cloudinary";
 
 cloudinaryConnect();
 
-export async function generatePdf(title: string, content: string, imageUrl: string): Promise<cloudinary.UploadApiResponse> {
+export async function generatePdf(name: string, title: string, content: string, imageUrl: string): Promise<cloudinary.UploadApiResponse> {
     let browser;
     try {
         // Load the HTML template
@@ -15,10 +15,8 @@ export async function generatePdf(title: string, content: string, imageUrl: stri
         try {
             htmlContent = fs.readFileSync(templatePath, 'utf-8');
         } catch (fileReadError) {
-            
             console.error('Error reading HTML template:', fileReadError);
             throw new Error('Failed to read HTML template');
-            
         }
 
         // Replace placeholders with actual data
@@ -38,13 +36,13 @@ export async function generatePdf(title: string, content: string, imageUrl: stri
         }
 
         // Save the PDF locally for debugging
-        const pdfPath = path.join(process.cwd(), 'output.pdf');
+        const pdfPath = path.join(process.cwd(), `${name}.pdf`);
         fs.writeFileSync(pdfPath, pdfBuffer);
 
-        // Upload PDF to Cloudinary
+        // Upload PDF to Cloudinary with a specified name
         const uploadResponse = await new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
             const uploadStream = cloudinary.v2.uploader.upload_stream(
-                { resource_type: 'raw', format: 'pdf' },
+                { resource_type: 'raw', format: 'pdf', public_id: name },
                 (error, result) => {
                     if (error) {
                         console.error('Cloudinary upload error:', error);

@@ -14,6 +14,7 @@ dbConnection();
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();
+        const pdfName = formData.get('name');
         const title = formData.get('title') as string;
         const content = formData.get('content') as string;
         const imageFile = formData.get('imageUrl') as File;
@@ -81,7 +82,7 @@ export async function GET(req: NextRequest) {
         const allPdfs = await DummyData.find({});
         return NextResponse.json({
             message: 'All PDFs fetched successfully',
-            data: { allPdfs },
+            data:allPdfs,
             error: null,
         }, { status: 200 });
     } catch (error: any) {

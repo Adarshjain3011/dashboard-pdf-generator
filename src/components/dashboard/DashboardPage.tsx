@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import Navbar from '../common/Navbar';
 
 interface PdfDataType {
     title: string;
@@ -12,7 +13,7 @@ interface PdfDataType {
 
 export default function DashboardPage() {
 
-    const [allPdfData, setAllPdfData] = useState<PdfDataType[]>([]);
+    const [allPdfData, setAllPdfData] = useState(null);
     const [pdfData, setPdfData] = useState<PdfDataType>({
         title: '',
         content: '',
@@ -61,24 +62,32 @@ export default function DashboardPage() {
     };
 
     const fetchAllPdf = async () => {
+        
         try {
             const response = await axios.get('/api/pdf/createPdf');
-            setAllPdfData(response.data.data); // Assuming the data structure of response is { message, data, error }
-            console.log(response.data);
+            console.log(response?.data?.data);
+            setAllPdfData(response?.data?.data); // Assuming the data structure of response is { message, data, error }
+
         } catch (error) {
+
             console.error('Error fetching PDF data', error);
         }
     };
 
     useEffect(() => {
+
         // Fetch all PDFs on component mount
-        // fetchAllPdf();
+
+        fetchAllPdf();
+
     }, []);
 
     return (
         <div>
-            <div className="p-4">
-                <h1 className="text-2xl font-bold mb-4">Hello</h1>
+            <div className="">
+            
+            <Navbar></Navbar>
+             
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -111,7 +120,7 @@ export default function DashboardPage() {
                 <div className="mt-4">
                     <h2 className="text-xl font-bold">All PDFs</h2>
                     <ul>
-                        {allPdfData.map((pdf, index) => (
+                        {allPdfData?.map((pdf, index) => (
                             <li key={index} className="border-b border-gray-300 py-2">
                                 <h3 className="font-bold">{pdf.title}</h3>
                                 <p>{pdf.content}</p>

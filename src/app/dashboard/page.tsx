@@ -6,6 +6,7 @@ export default function Dasboard(){
     return (
 
         <div>
+
             <DasboardPage/>
             
         </div>

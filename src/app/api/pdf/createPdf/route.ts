@@ -14,7 +14,7 @@ dbConnection();
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();
-        const name = formData.get('name');
+        const name = formData.get('name') as string;
         const title = formData.get('title') as string;
         const content = formData.get('content') as string;
         const imageFile = formData.get('imageUrl') as File;

@@ -5,7 +5,10 @@ import axios from 'axios';
 
 import Navbar from '../common/Navbar';
 
+import DownloadButtonPage from '../common/DownloadButton';
+
 interface PdfDataType {
+    name: string;
     title: string;
     content: string;
     imageUrl: FileList | null; // Adjusted to handle single file upload
@@ -15,6 +18,7 @@ export default function DashboardPage() {
 
     const [allPdfData, setAllPdfData] = useState(null);
     const [pdfData, setPdfData] = useState<PdfDataType>({
+        name: '',
         title: '',
         content: '',
         imageUrl: null,
@@ -36,6 +40,7 @@ export default function DashboardPage() {
         console.log(pdfData.imageUrl);
 
         const formData = new FormData();
+        formData.append('name', pdfData.name);
         formData.append('title', pdfData.title);
         formData.append('content', pdfData.content);
         if (pdfData.imageUrl) {
@@ -46,23 +51,23 @@ export default function DashboardPage() {
 
         try {
 
-            const response = await axios.post('/api/pdf/createPdf', formData,{
+            const response = await axios.post('/api/pdf/createPdf', formData, {
 
                 headers: {
-                    'Content-Type':'multipart/form-data'
+                    'Content-Type': 'multipart/form-data'
                 }
             });
 
             console.log("Response data:", response.data);
 
         } catch (error) {
-            
+
             console.error('Error response:', error);
         }
     };
 
     const fetchAllPdf = async () => {
-        
+
         try {
             const response = await axios.get('/api/pdf/createPdf');
             console.log(response?.data?.data);
@@ -85,10 +90,19 @@ export default function DashboardPage() {
     return (
         <div>
             <div className="">
-            
-            <Navbar></Navbar>
-             
+
+                <Navbar></Navbar>
+
                 <form onSubmit={handleSubmit}>
+
+                    <input
+                        type="text"
+                        name="name"
+                        value={pdfData.name}
+                        onChange={handleInputChange}
+                        placeholder="Enter the name of the document"
+                        className="mb-2 p-2 border text-black border-gray-300"
+                    />
                     <input
                         type="text"
                         name="title"
@@ -120,19 +134,26 @@ export default function DashboardPage() {
                 <div className="mt-4">
                     <h2 className="text-xl font-bold">All PDFs</h2>
                     <ul>
-                        {allPdfData?.map((pdf, index) => (
-                            <li key={index} className="border-b border-gray-300 py-2">
-                                <h3 className="font-bold">{pdf.title}</h3>
-                                <p>{pdf.content}</p>
-                                {pdf.imageUrl && typeof pdf.imageUrl === 'string' && (
-                                    <img
-                                        src={pdf.imageUrl}
-                                        alt={pdf.title}
-                                        className="w-32 h-32 object-cover"
-                                    />
-                                )}
-                            </li>
-                        ))}
+                        {
+
+                            allPdfData && allPdfData?.map((pdf:any, index:number) => (
+                                <li key={index} className="border-b border-gray-300 py-2">
+                                    <h3 className="font-bold">{pdf.title}</h3>
+                                    <p>{pdf.content}</p>
+                                    {pdf.imageUrl && typeof pdf.imageUrl === 'string' && (
+                                        <img
+                                            src={pdf.imageUrl}
+                                            alt={pdf.title}
+                                            className="w-32 h-32 object-cover"
+                                        />
+                                    )}
+
+                                    <DownloadButtonPage pdfId={pdf._id} name={pdf.title}/>
+
+                                </li>
+                            ))
+
+                        }
                     </ul>
                 </div>
             </div>

@@ -8,14 +8,14 @@ export function middleware(req:NextRequest){
 
     const path = req.nextUrl.pathname;
 
-    console.log("pathname",path)
+    // console.log("pathname",path)
 
     const publicPath ="/auth/";
 
 
     let token = req.cookies.get("token")?.value || "";
 
-    console.log("token",token);
+    // console.log("token",token);
 
     const ispublicPath = publicPath.startsWith(path);
 
